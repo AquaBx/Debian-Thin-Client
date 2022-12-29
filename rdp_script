@@ -1,0 +1,36 @@
+#!/bin/bash
+
+rds=''
+lbi=''
+domain=''
+
+gnome-session &
+
+echo "["$(date '+%Y-%m-%d %H:%M:%S')"] Entrée du script" >> ~/rdp_script.log
+while true
+do
+
+	entries=$(zenity --forms --separator "|" --add-entry "Identifiant" --add-password "Mot de passe" --text="Veuillez vous connecter" &)
+
+	id=$( echo $entries | cut -d "|" -f 1 )
+	pass=$( echo $entries | cut -d "|" -f 2 )
+
+	if [ $entries ]; then
+		if [ $id ]; then
+			if [ $pass ]; then
+				xfreerdp /d:"$domain" /v:"$rds" /u:"$id" /p:"$pass" /load-balance-info:"$lbi" /usb:auto +drives /monitors:1,2,3 /multimon /kbd:0x0000040C /cert:ignore /smartcard /sound /microphone >> /dev/null 2>> ~/rdp_script.log
+			else
+				zenity --warning --text "Veuillez rentrer un mot de passe"
+				echo "Veuillez rentrer un mot de passe" >> ~/rdp_script.log
+			fi
+		else
+			zenity --warning --text "Veuillez rentrer un identifiant"
+			echo "Veuillez rentrer un identifiant" >> ~/rdp_script.log
+		fi
+
+	else
+		echo -e "["$(date '+%Y-%m-%d %H:%M:%S')"] Sortie du script\n" >> ~/rdp_script.log
+		exit 0
+	fi
+
+done
