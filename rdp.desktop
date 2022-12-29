@@ -1,0 +1,4 @@
+[Desktop Entry]
+Name=RDP
+Exec=/usr/bin/rdp_script
+Type=Application
